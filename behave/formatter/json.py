@@ -49,11 +49,13 @@ class JSONFormatter(Formatter):
             tags_for_cucumber.append({"name":"@"+tagitem})
 
         self.current_feature_data = {
+            'id': str(feature.name).replace(' ', '-'),
             'keyword': feature.keyword,
             'name': feature.name,
             'tags': tags_for_cucumber,
             'line': feature.line,
             'location': six.text_type(feature.location),
+            'uri': str(feature.location).replace(':', '/'),
             'status': feature.status,
         }
         element = self.current_feature_data
