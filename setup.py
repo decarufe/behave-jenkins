@@ -53,13 +53,14 @@ def find_packages_by_root_package(where):
 # SETUP:
 # -----------------------------------------------------------------------------
 setup(
-    name="behave",
-    version="1.2.6.dev0",
-    description="behave is behaviour-driven development, Python style",
+    name="behave-jenkins",
+    version="1.2.5",
+    description="behave is behaviour-driven development, Python style. "
+                "This version is an adaption of behave to work with jenkins.",
     long_description=description,
-    author="Benno Rice, Richard Jones and Jens Engel",
-    author_email="behave-users@googlegroups.com",
-    url="http://github.com/behave/behave",
+    author="Eric De Carufel",
+    author_email="eric.decarufel@gmail.com",
+    url="http://github.com/decarufe/behave-jenkins",
     provides = ["behave", "setuptools_behave"],
     packages = find_packages_by_root_package(BEHAVE),
     py_modules = ["setuptools_behave"],

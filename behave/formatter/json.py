@@ -17,7 +17,7 @@ class JSONFormatter(Formatter):
     name = 'json'
     description = 'JSON dump of test run'
     dumps_kwargs = {}
-    split_text_into_lines = True   # EXPERIMENT for better readability.
+    split_text_into_lines = False   # EXPERIMENT for better readability.
 
     json_number_types = six.integer_types + (float,)
     json_scalar_types = json_number_types + (six.text_type, bool, type(None))
@@ -43,16 +43,22 @@ class JSONFormatter(Formatter):
     def feature(self, feature):
         self.reset()
         self.current_feature = feature
+
+        tags_for_cucumber = []
+        for tagitem in feature.tags:
+            tags_for_cucumber.append({"name":"@"+tagitem})
+
         self.current_feature_data = {
             'keyword': feature.keyword,
             'name': feature.name,
-            'tags': list(feature.tags),
+            'tags': tags_for_cucumber,
+            'line': feature.line,
             'location': six.text_type(feature.location),
             'status': feature.status,
         }
         element = self.current_feature_data
         if feature.description:
-            element['description'] = feature.description
+            element['description'] = '\n'.join(map(str, feature.description))
 
     def background(self, background):
         element = self.add_feature_element({
@@ -71,30 +77,40 @@ class JSONFormatter(Formatter):
             self.step(step_)
 
     def scenario(self, scenario):
+        tags_for_cucumber = []
+        for tagitem in scenario.tags:
+            tags_for_cucumber.append({"name":"@"+tagitem})
+
         element = self.add_feature_element({
             'type': 'scenario',
             'keyword': scenario.keyword,
             'name': scenario.name,
-            'tags': scenario.tags,
+            'tags': tags_for_cucumber,
+            'line': scenario.line,
             'location': six.text_type(scenario.location),
             'steps': [],
         })
         if scenario.description:
-            element['description'] = scenario.description
+            element['description'] = '\n'.join(map(str, scenario.description))
         self._step_index = 0
 
     def scenario_outline(self, scenario_outline):
+        tags_for_cucumber = []
+        for tagitem in scenario_outline.tags:
+            tags_for_cucumber.append({"name":"@"+tagitem})
+
         element = self.add_feature_element({
             'type': 'scenario_outline',
             'keyword': scenario_outline.keyword,
             'name': scenario_outline.name,
-            'tags': scenario_outline.tags,
+            'tags': tags_for_cucumber,
+            'line': scenario_outline.line,
             'location': six.text_type(scenario_outline.location),
             'steps': [],
             'examples': [],
         })
         if scenario_outline.description:
-            element['description'] = scenario_outline.description
+            element['description'] = '\n'.join(map(str, scenario_outline.description))
         self._step_index = 0
 
     @classmethod
@@ -125,6 +141,7 @@ class JSONFormatter(Formatter):
             'step_type': step.step_type,
             'name': step.name,
             'location': six.text_type(step.location),
+            'line': step.line
         }
 
         if step.text:
@@ -169,7 +186,7 @@ class JSONFormatter(Formatter):
         steps = self.current_feature_element['steps']
         steps[self._step_index]['result'] = {
             'status': result.status,
-            'duration': result.duration,
+            'duration': int(result.duration * 1000),
         }
         if result.error_message and result.status == 'failed':
             # -- OPTIONAL: Provided for failed steps.
