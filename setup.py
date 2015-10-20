@@ -54,7 +54,7 @@ def find_packages_by_root_package(where):
 # -----------------------------------------------------------------------------
 setup(
     name="behave-jenkins",
-    version="1.2.5",
+    version="1.2.5.1",
     description="behave is behaviour-driven development, Python style. "
                 "This version is an adaption of behave to work with jenkins.",
     long_description=description,
