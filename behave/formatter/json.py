@@ -188,7 +188,7 @@ class JSONFormatter(Formatter):
         steps = self.current_feature_element['steps']
         steps[self._step_index]['result'] = {
             'status': result.status,
-            'duration': int(result.duration * 1000),
+            'duration': int(result.duration * 1000000000),
         }
         if result.error_message and result.status == 'failed':
             # -- OPTIONAL: Provided for failed steps.
