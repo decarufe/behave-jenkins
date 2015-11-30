@@ -490,9 +490,9 @@ class Feature(TagAndStatusStatement, Replayable):
 
         # run this feature if the tags say so or any one of its scenarios
         run_feature = self.should_run(runner.config)
-        if run_feature or runner.config.show_skipped:
-            for formatter in runner.formatters:
-                formatter.feature(self)
+        #if run_feature or runner.config.show_skipped:
+        #    for formatter in runner.formatters:
+        #        formatter.feature(self)
 
         # current tags as a set
         runner.context.tags = set(self.tags)
@@ -503,6 +503,10 @@ class Feature(TagAndStatusStatement, Replayable):
             for tag in self.tags:
                 runner.run_hook('before_tag', runner.context, tag)
             runner.run_hook('before_feature', runner.context, self)
+            if run_feature or runner.config.show_skipped:
+                for formatter in runner.formatters:
+                    formatter.feature(self)
+
 
             # -- RE-EVALUATE SHOULD-RUN STATE:
             # Hook may call feature.mark_skipped() to exclude it.
